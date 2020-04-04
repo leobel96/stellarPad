@@ -1,0 +1,18 @@
+{
+  "name": "stellar-pad-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server-local.js",
+    "build": "netlify-lambda build index.js"
+  },
+  "author": "Leonardo Bellettini",
+  "license": "ISC",
+  "dependencies": {
+    "micro": "latest",
+    "netlify-lambda": "^1.6.3",
+    "serve-handler": "^6.1.2",
+    "serverless-http": "^2.3.2",
+    "socket.io": "^2.3.0"
+  }
+}

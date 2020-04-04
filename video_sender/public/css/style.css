@@ -1,0 +1,89 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.logo {
+    font-family: 'Pacifico', cursive;
+}
+
+h1 {
+    width: 11rem;
+    margin: 3vh auto;
+    text-align: center;
+    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dialog {
+    display: none;
+    position: absolute;
+    top: 15vh;
+    left: 15vw;
+    width: 70vw;
+    height: 70vh;
+    text-align: center;
+    font-size: larger;
+    overflow-y: auto;
+    color: white;
+    z-index: 3;
+    border-radius: 3vw;
+    background: #12c2e9;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.dialog > div {
+    position: absolute;
+    margin-left: 10%;
+    width: 80%;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: x-large;
+}
+
+#start {
+    display: block;
+    z-index: 4;
+}
+
+#IPList {
+    display: block;
+}
+
+#alert {
+    background: initial;
+    background-color: #f64f59;
+    z-index: 99;
+    font-size: 2em;
+  }
+
+@media screen and (max-height: 500px) {
+    .dialog > div{
+        font-size: inherit;
+        top: initial;
+        transform: initial;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    h1{
+        font-size: large;
+        margin: 5vh auto;
+    }
+    .dialog {
+        font-size: initial;
+        height: 64vh;
+        top: 18vh;
+    }
+}

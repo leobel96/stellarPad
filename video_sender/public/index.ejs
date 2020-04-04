@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="Description" content="Use you touch device as a wireless Graphic Tablet">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="apple-touch-icon" sizes="180x180" href="/server-public/icons/apple-touch-icon.png">
+        <meta name="mobile-web-app-capable" content="yes"> 
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <meta name="apple-mobile-web-app-title" content="Stellar Pad">
+        <link rel="icon" type="image/x-icon" href="/server-public/icons/favicon.ico"/>
+        <link rel="icon" type="image/png" sizes="32x32" href="/server-public/icons/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/server-public/icons/favicon-16x16.png">
+        <link rel="mask-icon" href="/server-public/icons/safari-pinned-tab.svg" color="#5bbad5">
+        <link rel="shortcut icon" href="/server-public/icons/favicon.ico">
+        <meta name="application-name" content="Stellar Pad" />
+        <meta name="msapplication-TileImage" content="/server-public/icons/mstile-150x150.png"> 
+        <meta name="msapplication-TileColor" content="#12c2e9">
+        <meta name="msapplication-config" content="/server-public/icons/browserconfig.xml">
+        <meta name="theme-color" content="#ffffff">
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Pacifico&display=swap" rel="stylesheet">
+        <link href="/server-public/css/style.css" rel="stylesheet" type="text/css">
+        <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js" defer></script>
+        <script src="/server-public/stream.js" defer></script>
+        <title>Stellar Pad Server</title>
+    </head>
+    <body>
+        <h1 class="logo">Stellar Pad</h1>
+        <div class="dialog" id="alert">
+            <div></div>
+        </div>
+        <div id="start" class="dialog" onclick="main(false)">
+            <div>
+                <!-- Hello! Now you will be asked to share your screen with your receiver device.
+                Please ensure you select "Entire Screen". <br> -->
+                Next you will see a list of IP addresses,
+                you have to write in your receiver app the one of the network interface you are connected to
+                (if you are connected to Wi-Fi it will be probably named "Wi-Fi"). Click to continue.
+            </div>
+        </div>
+        <div class="dialog" id="IPList">
+            <h2>IP Addresses:</h1>
+            <% IPs.forEach(ip => { %>
+                <article class="item">
+                    <div style="text-decoration: underline;"><%= ip.ifname %></div>
+                    <% if (ip.alias !== ""){ %> 
+                    <div>alias: <%= ip.alias %></div>
+                    <% } %>
+                    <div>IP: <%= ip.address %></div>
+                    <br>
+                </article>
+            <% }); %>
+        </div>    
+    </body>
+</html>
