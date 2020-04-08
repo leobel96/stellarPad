@@ -3,16 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node server-local.js",
-    "build": "netlify-lambda build index.js"
+    "start": "node index.js"
   },
   "author": "Leonardo Bellettini",
   "license": "ISC",
   "dependencies": {
-    "micro": "latest",
-    "netlify-lambda": "^1.6.3",
-    "serve-handler": "^6.1.2",
-    "serverless-http": "^2.3.2",
+    "express": "^4.17.1",
     "socket.io": "^2.3.0"
   }
 }
