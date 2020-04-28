@@ -1,10 +1,7 @@
-"use strict"
+"use strict";
 
-const webrtc = false
-
-var ffi = require("ffi")
-var os = require("os")
-var StructType = require("ref-struct")
+var ffi = require("ffi-napi");
+var StructType = require("ref-struct-napi");
 
 const MOUSEEVENTF_LEFTDOWN = 2;
 const MOUSEEVENTF_LEFTUP = 4;
@@ -38,8 +35,8 @@ if (process.platform === "win32"){
 
   dragMouse = function (point) {
     const entry = new Input()
-    entry.dx = (point.x*65535)
-    entry.dy = (point.y*65535)
+    entry.dx = (point[0]*65535)
+    entry.dy = (point[1]*65535)
     entry.mouseData = 0
     entry.dwFlags = MOUSEEVENTF_LEFTDOWN
     entry.dwFlags |= MOUSEEVENTF_MOVE
@@ -64,10 +61,10 @@ if (process.platform === "win32"){
 
   dragMouse = function (point) {
     if (firstPoint){
-      spawn(`xdotool mousemove ${point.x*screenWidth} ${point.y*screenHeight} mousedown 1`)
+      spawn(`xdotool mousemove ${point[0]*screenWidth} ${point[1]*screenHeight} mousedown 1`)
       firstPoint = false
     } else {
-      spawn(`xdotool mousedown 1 mousemove ${point.x*screenWidth} ${point.y*screenHeight}`)
+      spawn(`xdotool mousedown 1 mousemove ${point[0]*screenWidth} ${point[1]*screenHeight}`)
     }
   }
 
@@ -77,141 +74,10 @@ if (process.platform === "win32"){
 
 // Start server
 
-// Get local IP
-function getIP() {
-    const ifaces = os.networkInterfaces()
-    let response = []
-    Object.keys(ifaces).forEach(function (ifname) {
-      var alias = 0
-      ifaces[ifname].forEach(function (iface) {
-        if ("IPv4" !== iface.family || iface.internal !== false) {
-          // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
-          return
-        }
-  
-        if (alias >= 1) {
-          // this single interface has multiple ipv4 addresses
-          response.push({"ifname": ifname, "alias": alias, "address": iface.address})
-        } else {
-          // this interface has only one ipv4 adress
-          response.push({"ifname": ifname, "alias": "", "address": iface.address})
-        }
-        ++alias
-      })
-    })
-    return response
-}
-
-var fs = require('fs'),
-    path = require("path"),
-    ejs = require("ejs"),
-    library
-
-const options = {}
-
-if (webrtc === true){
-  library = require('https')
-  options = {
-    key: fs.readFileSync(path.join(__dirname, "server.key")),
-    cert: fs.readFileSync(path.join(__dirname, "server.cert")),
-    rejectUnauthorized: false,
-    requestCert: true
-  }
-} else {
-  library = require('http')
-}
-
-
-const template = fs.readFileSync("./server-public/index.ejs").toString()
-const index = ejs.render(template, {IPs: getIP()})
-
-const server = library.createServer(options, function (req, res) {
-    if (req.url == "/"){
-        res.writeHead(200)
-        res.end(index)
-    } else {
-      fs.readFile(__dirname + req.url, function (err,data) {
-        if (err) {
-          res.writeHead(404)
-          res.end(JSON.stringify(err))
-          return
-        }
-        res.writeHead(200)
-        res.end(data)
-      })
-    }
-})
-
-server.listen(3000, "0.0.0.0")
-
-var count = 0
-var offer, serverId, clientId
-offer = serverId = clientId = null
-
-const io = require("socket.io")(server, {transports: []})
-
-async function init(){
-
-  io.sockets.on("connection", async (socket) => {
-
-    if (io.engine.clientsCount > 2) {
-      socket.disconnect()
-      console.log("Too many clients")
-      return
-    }
-
-    socket.on("serverConnected", async () => {
-      console.log(new Date(), "Server connected.")
-      serverId = socket.id
-      if (clientId !== null){
-        socket.send("clientConnected")
-      }
-    })
-
-    socket.on("clientConnected", async () => {
-      console.log(new Date(), "Client connected.")
-      clientId = socket.id
-      if (serverId !== null){
-        io.to(serverId).send("clientConnected")
-      }
-    })
-
-    socket.on("RTCPOffer", (newOffer) => {
-      console.log("RTCPOffer", newOffer)
-      offer = newOffer
-      io.to(clientId).emit("RTCPOffer", offer)
-    })
-
-    socket.on("newIceCandidate", iceCandidate => {
-      io.to((socket.id == clientId) ? serverId : clientId).emit("newIceCandidate", iceCandidate)
-    })
-
-    socket.on("RTCPAnswer", function(answer){
-      console.log("RTCPAnswer", answer)
-      io.to(serverId).emit("RTCPAnswer", answer)
-    })
+const express = require("express");
+const app = express();
+const path = require("path");
     
-    socket.on("UP", unclickMouse)
+app.use(express.static(path.join(__dirname, "public")));
 
-    socket.on("movement", dragMouse)
-
-    socket.on("disconnect", async (reason) => {
-      if (socket.id === clientId){
-        console.log(new Date(), "Client disconnected.", reason)
-        clientId = null
-        io.to(serverId).send("clientDisconnected")
-      } else {
-        console.log(new Date(), "Server disconnected.", reason)
-      }
-      unclickMouse()
-      count = 0
-    })
-
-  })
-
-}
-
-init().then(() => {
-  console.log("Initialized")
-})
-
+app.listen(4000, "0.0.0.0", () => console.log("Listening on port 4000"));

@@ -1,1 +1,48 @@
 {
+  "name": "stellar-pad-sender",
+  "productName": "Stellar Pad videoSender",
+  "version": "1.0.0",
+  "description": "Use your touch device as a wireless Graphic Tablet",
+  "main": "electron_main.js",
+  "scripts": {
+    "start": "APP_DEV=true electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.electron.stellar-pad-sender",
+    "productName": "Stellar Pad videoSender",
+    "extraResources": [
+      {
+        "from": "libxdo.so.3",
+        "to": "."
+      }
+    ],
+    "win": {
+      "target": "portable"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "repository": "",
+  "keywords": [
+    "Electron",
+    "wireless",
+    "graphic",
+    "graphic-tablet",
+    "tablet"
+  ],
+  "author": "Leonardo Bellettini",
+  "license": "CC0-1.0",
+  "dependencies": {
+    "ffi-napi": "^2.4.7",
+    "ref-napi": "^1.4.3",
+    "ref-struct-napi": "^1.1.0",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "electron": "^8.2.0",
+    "electron-builder": "^22.5.1"
+  }
+}

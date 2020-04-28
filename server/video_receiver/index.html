@@ -1,64 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="Description" content="Use you touch device as a wireless Graphic Tablet">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-        <meta name="mobile-web-app-capable" content="yes"> 
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="apple-mobile-web-app-title" content="Stellar Pad">
-        <link rel="icon" type="image/x-icon" href="icons/favicon.ico"/>
-        <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
-        <link rel="manifest" href="manifest.json">
-        <link rel="mask-icon" href="icons/safari-pinned-tab.svg" color="#5bbad5">
-        <link rel="shortcut icon" href="icons/favicon.ico">
-        <meta name="application-name" content="Stellar Pad" />
-        <meta name="msapplication-TileImage" content="icons/mstile-150x150.png"> 
-        <meta name="msapplication-TileColor" content="#12c2e9">
-        <meta name="msapplication-config" content="icons/browserconfig.xml">
-        <meta name="theme-color" content="#ffffff">
-        <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-        <link href="css/style.css" rel="stylesheet" type="text/css">
-        <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js" defer></script>
-        <script src="js/main.js" defer></script>
-        <title>Stellar Pad</title>
-    </head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="Description"
+      content="Use you touch device as a wireless Graphic Tablet"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Stellar Pad Receiver" />
+    <link rel="icon" type="image/x-icon" href="images/icons/favicon.ico" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="images/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="images/icons/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="images/icons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"
+      defer
+    ></script>
+    <script src="js/main.js" defer></script>
+    <title>Stellar Pad</title>
+  </head>
 
-    <body class="vsc-initialized">
-        <video muted autoplay id="remoteVideo" class="fullScreen"></video>
-        <div id="drawingArea" class="fullScreen"></div>
-        <div class="dialog" id="install">
-            <div>
-                You have to install the PWA in order to use it. 
-                Touch the screen and accept the prompt.
-            </div>
+  <body class="vsc-initialized">
+    <video muted autoplay id="remoteVideo" class="fullScreen"></video>
+    <div id="drawingArea" class="fullScreen"></div>
+    <div class="dialog" id="install">
+      <div>
+        You need to install the app. On Safari
+        click the share button 
+        (<img src="/images/icons/share_icon.svg">), 
+        then "Add to Home Screen" and wait for the star icon 
+        to appear before tapping "Add".
+      </div>
+    </div>
+    <div class="dialog" id="menu">
+      <h1>Menu</h1>
+      <input type="checkbox" name="onlyPen" />
+      <label for="onlyPen">Draw with stylus only</label><br />
+      <input type="button" value="Save" />
+    </div>
+    <div class="dialog" id="afterInstall" onclick="this.style.display='none'">
+      <div>
+        <span class="logo">Stellar Pad</span>
+        has been successfully installed. Tap to start. You can tap with two
+        fingers at any time to open/close the Menu.
+      </div>
+    </div>
+    <div class="dialog" id="start">
+      <div class="flex">
+        <div class="logo">Stellar Pad</div>
+        <div>
+          <label for="tokenInput">Enter the session token:</label><br>
+          <input
+            type="text"
+            id="tokenInput"
+          />
+          <br>
+          <input type="button" value="Start" id="startButton"/>
         </div>
-        <div class="dialog" id="menu">
-            <h1>Menu</h1>
-            <input type="checkbox" name="onlyPen">
-            <label for="onlyPen">Draw with stylus only</label><br>
-            <input type="button" value="Save">
-        </div>
-        <div class="dialog" id="afterInstall" onclick="this.style.display='none'">
-            <div>
-                <span class="logo">Stellar Pad</span>
-                has been successfully installed.
-                Tap to start. You can tap with two fingers at any time 
-                to open/close the Menu.
-            </div>
-        </div>
-        <div class="dialog" id="start">
-            <h1 class="logo">Stellar Pad</h1>
-            <form action="">
-                <input type="text" name="ip" placeholder="Enter PC local IP"><br>
-                <input type="submit" value="Start">
-            </form>
-        </div>
-        <div class="dialog" id="alert" onclick="this.style.display='none'">
-            <div></div>
-        </div>
-    </body>
+      </div>
+    </div>
+    <div class="dialog" id="alert" onclick="this.style.display='none'">
+      <div></div>
+    </div>
+    <div class="dialog" id="shouldRotate">
+      <div>
+        Please rotate your device in landscape.
+      </div>
+    </div>
+  </body>
 </html>
